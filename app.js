@@ -40,4 +40,4 @@ const broadcast = (msg, ws) => {
 }
 
 
-server.listen(3000);
+server.listen(3000,'127.0.0.1');
