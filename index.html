@@ -1,1 +1,98 @@
+@@ -1 +1,96 @@
 <html><head></head><body>are we going to zibo today</body></html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    #send-w {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="login-w">
+    <input id="login-name" type="text" placeholder="请输入昵称">
+    <button id="login">登入</button>
+  </div>
+
+  <div id="send-w">
+    <input id="textContent" type="text" placeholder="请输入聊天内容">
+    <button id="send">发送</button>
+  </div>
+
+  <!-- 显示内容 -->
+  <div id="content"></div>
+</body>
+<script>
+  let loginName = document.getElementById('login-name');
+  let loginW = document.getElementById('login-w');
+  let sendW = document.getElementById('send-w');
+  let input = document.getElementById('textContent');
+  let login = document.getElementById('login');
+  let button = document.getElementById('send');
+  let div = document.getElementById('content');
+
+  login.addEventListener('click', () => {
+    let value = loginName.value;
+    if (value) {
+      loginName.value = ''
+      loginW.style.display = 'none'
+      sendW.style.display = 'block'
+      webSocketFn()
+    }
+  })
+
+  function webSocketFn () {
+    const socket = new WebSocket("ws://localhost:12010/");
+    socket.onopen = function () {
+      div.innerHTML = '连接成功';
+    }
+    button.addEventListener('click', () => {
+      let value = input.value;
+      if (value) {
+        socket.send(value);
+        input.value = ''
+      }
+    });
+
+    function restConcent () {
+      div.innerHTML = '重新连接中...';
+      socket.onopen = function () {
+        div.innerHTML = '连接成功';
+      }
+    }
+
+    socket.onerror = function (err) {
+      console.log("error: ", err);
+    }
+
+    socket.onclose = function (data) {
+      console.log("close", data);
+      let dv = document.createElement('div');
+      dv.innerHTML = `close:code:${data.code}`;
+      div.appendChild(dv);
+      restConcent()
+    }
+
+    socket.onmessage = function (data) {
+      console.log(data);
+      let dv = document.createElement('div');
+      dv.innerHTML = data.data;
+      div.appendChild(dv);
+    }
+  }
+
+</script>
+
+</html>
