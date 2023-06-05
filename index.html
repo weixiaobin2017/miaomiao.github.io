@@ -51,7 +51,7 @@
   })
 
   function webSocketFn () {
-    const socket = new WebSocket("ws://localhost:12010/");
+      const socket = new WebSocket("ws://127.0.0.1:12010/");
     socket.onopen = function () {
       div.innerHTML = '登录成功';
       socket.send(JSON.stringify({ name: loginName.value, text: '', type: 0 }));
